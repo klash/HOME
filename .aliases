@@ -1,0 +1,11 @@
+# some useful aliases
+alias p2='awk {print \ \$2}'
+alias get-ssh-info=". ~/.ssh/mac-ssh-`uname -n`"
+alias j=jobs
+alias m=$PAGER
+alias g='egrep -i'
+
+# # be paranoid
+# alias cp='cp -ip'
+# alias mv='mv -i'
+# alias rm='rm -i'

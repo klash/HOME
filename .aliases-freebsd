@@ -1,0 +1,2 @@
+alias git=/volume/nfsbuild23/surinder/local/FreeBSD/git/8ff3ea7/bin/git
+alias ls='ls -AF'

@@ -1,0 +1,16 @@
+[core]
+	quotepath = false
+	pager = less
+[user]
+	name = Karl Klashinsky
+	email = klash@employees.org
+[push]
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
+[color]
+	ui = auto
+# This is specific for Open Contrail's gerrit (https://review.opencontrail.org)
+[gitreview]
+	username = Klash

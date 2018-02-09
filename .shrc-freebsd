@@ -1,0 +1,2 @@
+# Specific to Juniper's environment
+PATH=/volume/buildtools/bin:${PATH}:/volume/labtools/bin

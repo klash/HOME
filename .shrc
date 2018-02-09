@@ -1,0 +1,52 @@
+# $FreeBSD: src/share/skel/dot.shrc,v 0.2 1999/08/28 00:21:54 peter Exp $
+#
+# .shrc - bourne shell startup file 
+#
+# This file will be used if the shell is invoked for interactive use and
+# the environment variable ENV is set to this file.
+#
+# see also sh(1), environ(7).
+#
+
+SHRC=1; export SHRC
+
+export SYSTEM=`uname| tr '[:upper:]' '[:lower:]'`
+
+umask	022
+
+# remove /usr/games and /usr/X11R6/bin if you want
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/X11R6/bin
+export PATH
+PATH=${PATH}:$HOME/bin
+
+[ -r $HOME/.shrc-$SYSTEM ] && source $HOME/.shrc-$SYSTEM
+
+# Setting TERM is normally done through /etc/ttys.  Do only override
+# if you're sure that you'll never log in via telnet or xterm or a
+# serial line.
+# Use cons25l1 for iso-* fonts
+# TERM=cons25; 	export TERM
+
+BLOCKSIZE=K;	       export BLOCKSIZE
+EDITOR=emacsclient;    export EDITOR
+PAGER=less;	       export PAGER
+LESS=iR;	       export LESS
+
+# Junos hacks/info
+# SB_BASE_PATH, SB_BASE for workon, etc (per-host)
+# RVSCRIPTS=/volume/current/sw-projects/review-tracker/scripts; export RVSCRIPTS
+# NEED_BSD_UI=yes;       export NEED_BSD_UI
+
+SVNREPO="https://svl-svn-03.juniper.net/svn/junos-2009"
+export SVNREPO
+
+CVSROOT=cvs.juniper.net:/cvs/juniper
+export CVSROOT
+
+# set ENV to a file invoked each time sh is started for interactive use.
+ENV=$HOME/.shrc; export ENV
+
+# Uncomment next line to enable the builtin emacs(1) command line editor
+# in sh(1), e.g. C-a -> beginning-of-line.
+# set -o emacs
+

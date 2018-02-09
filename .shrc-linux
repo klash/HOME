@@ -1,0 +1,22 @@
+PATH=/opt/tools/bin:$PATH
+
+if [ -r /volume/buildtools/bin ]; then
+   PATH=/volume/buildtools/bin:$PATH
+fi
+
+if [ -r $HOME/build-tools ]; then
+   PATH=${PATH}:$HOME/build-tools
+fi
+
+# Add this to your PATH to get access to the 64-bit 'emake':
+if [ -d /opt/ecloud/i686_Linux/64/bin ]; then
+   PATH=${PATH}:/opt/ecloud/i686_Linux/64/bin
+fi
+
+# PATH=/opt/tools/scala-2.9.1.final/bin:/opt/tools/bin:$PATH
+# export JAVA_OPTS="-Xss64M -Xmx12G"
+
+if [ "`uname -n`" == "klash-desktop" -o -d "/home/klash" ]; then
+    export GRADLE_USER_HOME=/home/klash/.gradle
+fi
+

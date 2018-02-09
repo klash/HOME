@@ -1,0 +1,53 @@
+alias ls='ls -AF --color=auto'
+
+alias gs="git status"
+
+alias cvs=/usr/bin/cvs
+
+alias pkgls='dpkg --get-selections'
+alias pkgchk='dpkg-query -l'
+
+# Need to also look in places like:
+# /build/ci-admin/unit_test_logs/ci-contrail-controller-unittest/6794/home/jenkins/workspace/ci-contrail-controller-unittest/repo/build/debug/vnsw/agent/test/test_integration.log
+find_test_dir() {
+    tnum=$1
+    test=$2
+
+    dir=/ci-admin/failed_systest_logs
+
+    [[ -z $test ]] && test='*'
+
+    tdirs=$(ls -d $dir/$test/$tnum/root/contrail-test/logs)
+    count=$(echo $tdirs | wc -w)
+    if [[ $count -gt 1 ]]; then
+	echo WARN: More than one test dir found >&2
+    fi
+    echo $tdirs
+}
+
+alias tdir=find_test_dir
+
+tless() {
+    tdir=$(find_test_dir $1)
+    less $tdir/*
+}
+
+tgrep() {
+    arg=$1
+    pattern=$2
+
+    if [[ $pattern =~ ^- ]]; then
+	option=$pattern
+	pattern=$3
+    fi
+    tdir=$(find_test_dir $arg)
+    grep $option "$pattern" $tdir/*
+}
+
+resultgrep(){
+    tgrep $1 $* 'END TEST'
+}
+
+fgrep(){
+    tgrep $1 $* 'END TEST.*FAILED'
+}

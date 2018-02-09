@@ -1,0 +1,13 @@
+if [ -n "$PS1" ]; then
+    PS1='[\u@\h] '; export PS1
+
+    source ${HOME}/.aliases
+    [ -r $HOME/.aliases-$SYSTEM ] && source $HOME/.aliases-$SYSTEM
+fi
+
+# # set prompt: ``username@hostname$ '' 
+# PS1="`whoami`@`hostname | sed 's/\..*//'`"
+# case `id -u` in
+# 	0) PS1="${PS1}# ";;
+# 	*) PS1="${PS1}$ ";;
+# esac
