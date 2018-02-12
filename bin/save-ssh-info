@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Typical dump of SSH var's:
+#   SSH_CLIENT=172.23.8.59 53558 22
+#   SSH_TTY=/dev/pts/11
+#   SSH_AUTH_SOCK=/tmp/ssh-RVlWn24677/agent.24677
+#   SSH_CONNECTION=172.23.8.59 53558 192.168.8.128 22
+
+SSH_VARS="SSH_CLIENT SSH_TTY SSH_AUTH_SOCK SSH_CONNECTION"
+
+tmp_file=`mktemp /tmp/sshsave.XXXX`
+host=`uname -n`
+
+# First remove any old
+echo unset $SSH_VARS > $tmp_file
+
+# Now create our own ssh agent
+ssh-agent | grep -v '^echo' >> $tmp_file
+
+if cmp $HOME/.ssh/mac-ssh-${host} $tmp_file > /dev/null 2>&1; then
+    echo "info: mac ssh info already up to date"
+    /bin/rm -f $tmp_file
+else
+    echo "info: updating mac ssh info for ${host}"
+    [[ -r $HOME/.ssh/mac-ssh-${host} ]] && /bin/mv $HOME/.ssh/mac-ssh-${host} $HOME/.ssh/mac-ssh-${host}.bak
+    /bin/mv $tmp_file $HOME/.ssh/mac-ssh-${host}
+fi
+
