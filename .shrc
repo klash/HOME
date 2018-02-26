@@ -16,6 +16,7 @@ umask	022
 
 # remove /usr/games and /usr/X11R6/bin if you want
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/X11R6/bin
+[[ -d /build/apps/bin ]] && PATH=/build/apps/bin:$PATH
 export PATH
 PATH=${PATH}:$HOME/bin
 
@@ -49,4 +50,3 @@ ENV=$HOME/.shrc; export ENV
 # Uncomment next line to enable the builtin emacs(1) command line editor
 # in sh(1), e.g. C-a -> beginning-of-line.
 # set -o emacs
-
