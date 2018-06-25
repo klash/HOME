@@ -12,7 +12,7 @@ SHRC=1; export SHRC
 
 export SYSTEM=`uname| tr '[:upper:]' '[:lower:]'`
 
-umask	022
+umask 022
 
 # remove /usr/games and /usr/X11R6/bin if you want
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/X11R6/bin
@@ -32,6 +32,8 @@ BLOCKSIZE=K;	       export BLOCKSIZE
 EDITOR=emacsclient;    export EDITOR
 PAGER=less;	       export PAGER
 LESS=iR;	       export LESS
+HISTSIZE=;	       export HISTSIZE
+HISTFILESIZE=;	       export HISTFILESIZE
 
 # Junos hacks/info
 # SB_BASE_PATH, SB_BASE for workon, etc (per-host)
