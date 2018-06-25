@@ -1,6 +1,7 @@
 [core]
 	quotepath = false
 	pager = less
+	editor = emacsclient
 [user]
 	name = Karl Klashinsky
 	email = klash@employees.org
