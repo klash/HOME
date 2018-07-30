@@ -1,5 +1,7 @@
 if [ -n "$PS1" ]; then
-    PS1='[\u@\h] '; export PS1
+    # PS1=$'\\[\E[1m\E[31m\\]\\h:\\w #\\[\E(B\E[m\\] '
+    # PS1='[\u@\h] '; export PS1
+    PS1=$'\\[\E[1m\E[31m\\][\\u@\\h:\\w]\\[\E(B\E[m\\] '
 
     source ${HOME}/.aliases
     [ -r $HOME/.aliases-$SYSTEM ] && source $HOME/.aliases-$SYSTEM

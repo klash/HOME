@@ -16,7 +16,7 @@ fi
 # PATH=/opt/tools/scala-2.9.1.final/bin:/opt/tools/bin:$PATH
 # export JAVA_OPTS="-Xss64M -Xmx12G"
 
-if [ "`uname -n`" == "klash-desktop" -o -d "/home/klash" ]; then
-    export GRADLE_USER_HOME=/home/klash/.gradle
-fi
+# if [ "`uname -n`" == "klash-desktop" -o -d "/home/klash" ]; then
+#     export GRADLE_USER_HOME=/home/klash/.gradle
+# fi
 

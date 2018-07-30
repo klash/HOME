@@ -20,8 +20,6 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/us
 export PATH
 PATH=${PATH}:$HOME/bin
 
-[ -r $HOME/.shrc-$SYSTEM ] && source $HOME/.shrc-$SYSTEM
-
 # Setting TERM is normally done through /etc/ttys.  Do only override
 # if you're sure that you'll never log in via telnet or xterm or a
 # serial line.
@@ -35,16 +33,7 @@ LESS=iR;	       export LESS
 HISTSIZE=;	       export HISTSIZE
 HISTFILESIZE=;	       export HISTFILESIZE
 
-# Junos hacks/info
-# SB_BASE_PATH, SB_BASE for workon, etc (per-host)
-# RVSCRIPTS=/volume/current/sw-projects/review-tracker/scripts; export RVSCRIPTS
-# NEED_BSD_UI=yes;       export NEED_BSD_UI
-
-SVNREPO="https://svl-svn-03.juniper.net/svn/junos-2009"
-export SVNREPO
-
-CVSROOT=cvs.juniper.net:/cvs/juniper
-export CVSROOT
+[ -r $HOME/.shrc-$SYSTEM ] && source $HOME/.shrc-$SYSTEM
 
 # set ENV to a file invoked each time sh is started for interactive use.
 ENV=$HOME/.shrc; export ENV

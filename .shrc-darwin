@@ -1,0 +1,5 @@
+# this is used to enable colour in OSX shell(s)
+CLICOLOR=1
+EDITOR=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+
+export EDITOR CLICOLOR
