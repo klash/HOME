@@ -33,6 +33,10 @@ LESS=iR;	       export LESS
 HISTSIZE=;	       export HISTSIZE
 HISTFILESIZE=;	       export HISTFILESIZE
 
+# This might be improved by using https://github.com/wofr06/lesspipe
+colpipe=$(which src-hilite-lesspipe.sh)
+[[ -n $colpipe ]] && export LESSOPEN="| $colpipe %s"
+
 [ -r $HOME/.shrc-$SYSTEM ] && source $HOME/.shrc-$SYSTEM
 
 # set ENV to a file invoked each time sh is started for interactive use.

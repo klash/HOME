@@ -5,6 +5,14 @@ alias j=jobs
 alias m=$PAGER
 alias g='egrep -i'
 
+# If LESSOPEN is defined, then we found src-hilite-lesspipe.sh, which
+# means we should also find source-highlight
+if [[ -n $LESSOPEN ]]; then
+   diff() {
+     $(which diff) $* | $(which source-highlight) --src-lang=diff --out-format=esc
+   }
+fi
+
 # # be paranoid
 # alias cp='cp -ip'
 # alias mv='mv -i'
