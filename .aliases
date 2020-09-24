@@ -4,16 +4,75 @@ alias get-ssh-info=". ~/.ssh/mac-ssh-`uname -n`"
 alias j=jobs
 alias m=$PAGER
 alias g='egrep -i'
+alias e=emacsclient
+alias en='emacsclient -n'
+
+# VMware specific
+alias ldi=/build/apps/bin/vmw_ldap_info
+alias ldi2=$(echo ~thutt/scripts/telw)
 
 # If LESSOPEN is defined, then we found src-hilite-lesspipe.sh, which
 # means we should also find source-highlight
 if [[ -n $LESSOPEN ]]; then
-   diff() {
-     $(which diff) $* | $(which source-highlight) --src-lang=diff --out-format=esc
-   }
+  diff_filt="$(which source-highlight) --src-lang=diff --out-format=esc"
+  diff() {
+    $(which diff) $* | $diff_filt
+  }
+else
+  diff_filt="cat"
+fi
+
+diff-less() {
+  diff $* | less
+}
+
+P4=$(which p4 2> /dev/null)
+if [[ -n $P4 ]] ; then
+  # So annoying that p4 gives unusuable paths...
+  p4_path_filt='s=//depot/\([^/]*\)/[^/]*/=\1/=g'
+  alias p4-path-filter="sed -e 's=//depot/\([^/]*\)/[^/]*/=\1/=g'"
+  p4-path-fix() {
+    for i in $*; do
+      echo $i | p4-path-filter
+    done
+  }
+
+  # Ditto their own crappy diff header format...
+  p4_diff_filt='s/^==== \(.*\)/--- \1\n+++ \1/'
+  p4-diff-fix() {
+    $P4 diff -du $* | sed -e "$p4_diff_filt"
+  }
+  p4-diff() {
+    p4-diff-fix -du $* | sed -e "$p4_diff_filt" | $diff_filt
+  }
+  p4-diff-less() {
+    p4-diff $* | less
+  }
+  p4-cln-diff() {
+    $P4 -F %depotFile% opened -c $1 | p4 -x - diff -du10 | sed -e "$p4_diff_filt" | $diff_filt
+  }
+  p4-cln-diff-less() {
+    p4-cln-diff $* | less
+  }
+  p4-describe() {
+    $P4 describe -du $* | sed -e 's/^==== \(.*\)/--- \1\n+++ \1/' | sed -e "$p4_diff_filt" | sed -e "$p4_path_filt" | $diff_filt
+  }
+  p4-describe-less() {
+    p4-describe $* | less
+  }
+
+  # convenience aliases
+  alias p4d=p4-diff
+  alias p4dl=p4-diff-less
+  alias p4ds="p4-describe"
+  alias p4dsl="p4-describe-less"
+  alias p4cd=p4-cln-diff
+  alias p4cdl=p4-cln-diff-less
+  alias p4f=p4-path-fix
 fi
 
 # # be paranoid
 # alias cp='cp -ip'
 # alias mv='mv -i'
 # alias rm='rm -i'
+# gcb buildinfo --branch main --days 1 |

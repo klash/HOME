@@ -1,4 +1,4 @@
-PATH=/opt/tools/bin:$PATH
+[[ -d /opt/tools/bin ]] && PATH=/opt/tools/bin:$PATH
 
 if [ -r /volume/buildtools/bin ]; then
    PATH=/volume/buildtools/bin:$PATH

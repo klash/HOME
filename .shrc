@@ -16,9 +16,14 @@ umask 022
 
 # remove /usr/games and /usr/X11R6/bin if you want
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/X11R6/bin
-[[ -d /build/apps/bin ]] && PATH=/build/apps/bin:$PATH
-export PATH
+
+# VMware specific PATH adds
+[[ -d /build/apps/bin ]]     && PATH=/build/apps/bin:$PATH
+[[ -d /mts/git/bin ]]        && PATH=/mts/git/bin:$PATH
+[[ -d $HOME/git-tools/bin ]] && PATH=$PATH:$HOME/git-tools/bin
+
 PATH=${PATH}:$HOME/bin
+export PATH
 
 # Setting TERM is normally done through /etc/ttys.  Do only override
 # if you're sure that you'll never log in via telnet or xterm or a
@@ -29,13 +34,21 @@ PATH=${PATH}:$HOME/bin
 BLOCKSIZE=K;	       export BLOCKSIZE
 EDITOR=emacsclient;    export EDITOR
 PAGER=less;	       export PAGER
-LESS=iR;	       export LESS
+# LESS=iR;	       export LESS
+LESS=iRFX;	       export LESS
 HISTSIZE=;	       export HISTSIZE
 HISTFILESIZE=;	       export HISTFILESIZE
 
 # This might be improved by using https://github.com/wofr06/lesspipe
-colpipe=$(which src-hilite-lesspipe.sh)
+if [[ -x $HOME/bin/src-hilite-lesspipe.sh ]]; then
+    colpipe=$HOME/bin/src-hilite-lesspipe.sh
+else
+    colpipe=$(which src-hilite-lesspipe.sh 2> /dev/null)
+fi
 [[ -n $colpipe ]] && export LESSOPEN="| $colpipe %s"
+
+# Set-up for p5, which is a wrapper/front-end environment for perforce
+[[ -n $(which p5 2> /dev/null) ]] && export P4CONFIG=.p4config
 
 [ -r $HOME/.shrc-$SYSTEM ] && source $HOME/.shrc-$SYSTEM
 
