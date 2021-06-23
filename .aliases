@@ -30,7 +30,7 @@ P4=$(which p4 2> /dev/null)
 if [[ -n $P4 ]] ; then
   # So annoying that p4 gives unusuable paths...
   p4_path_filt='s=//depot/\([^/]*\)/[^/]*/=\1/=g'
-  alias p4-path-filter="sed -e 's=//depot/\([^/]*\)/[^/]*/=\1/=g'"
+  alias p4-path-filter="sed -e 's=//depot/\([^/]*\)/[^/]*/\(.*\)\t.*$=\1/\2=g'"
   p4-path-fix() {
     for i in $*; do
       echo $i | p4-path-filter
@@ -40,7 +40,7 @@ if [[ -n $P4 ]] ; then
   # Ditto their own crappy diff header format...
   p4_diff_filt='s/^==== \(.*\)/--- \1\n+++ \1/'
   p4-diff-fix() {
-    $P4 diff -du $* | sed -e "$p4_diff_filt"
+    $P4 diff -du $* | sed -e "$p4_diff_filt" | p4-path-filter
   }
   p4-diff() {
     p4-diff-fix -du $* | sed -e "$p4_diff_filt" | $diff_filt
@@ -61,6 +61,18 @@ if [[ -n $P4 ]] ; then
     p4-describe $* | less
   }
 
+  alias btree="bld tree"
+  bldlogs() {
+    bt=$(bld tree $1)
+    logs=$(find $bt/logs -type f)
+    less $logs
+  }
+  bldlog() {
+  alias bdlog="bldalllogs"
+    bt=$(bld tree $1)
+    logs=$(find $bt/logs -name gobuilds.log)
+    less $logs
+  }
   # convenience aliases
   alias p4d=p4-diff
   alias p4dl=p4-diff-less

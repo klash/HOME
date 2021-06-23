@@ -16,15 +16,18 @@
 
 (server-start)				; nice to use emacsclient
 
+(add-to-list 'auto-mode-alist '("\\.sc" . python-mode))
+
 ;; (display-time)				; see display-time-day-and-date
 
 ;; For shell modes, match my prompt.
 (setq shell-prompt-pattern "klash.*\] ")
 
 (setq-default c-basic-offset 4)
+(setq-default fill-column 85)
 
 ;; Where to look for personal libraries
-(setq load-path (append load-path (cons (expand-file-name "~/emacs") nil)))
+(setq load-path (append load-path (cons (expand-file-name "~/.emacs.d/lisp") nil)))
 
 (setq c-mode-hook			; C-mode settings
       (function (lambda ()
@@ -106,3 +109,99 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+         (next-win-buffer (window-buffer (next-window)))
+         (this-win-edges (window-edges (selected-window)))
+         (next-win-edges (window-edges (next-window)))
+         (this-win-2nd (not (and (<= (car this-win-edges)
+                     (car next-win-edges))
+                     (<= (cadr this-win-edges)
+                     (cadr next-win-edges)))))
+         (splitter
+          (if (= (car this-win-edges)
+             (car (window-edges (next-window))))
+          'split-window-horizontally
+        'split-window-vertically)))
+    (delete-other-windows)
+    (let ((first-win (selected-window)))
+      (funcall splitter)
+      (if this-win-2nd (other-window 1))
+      (set-window-buffer (selected-window) this-win-buffer)
+      (set-window-buffer (next-window) next-win-buffer)
+      (select-window first-win)
+      (if this-win-2nd (other-window 1))))))
+(global-set-key (kbd "C-x |") 'toggle-window-split)
+
+(defun window-toggle-split-direction ()
+  "Switch window split from horizontally to vertically, or vice versa.
+
+i.e. change right window to bottom, or change bottom window to right."
+  (interactive)
+  (require 'windmove)
+  (let ((done))
+    (dolist (dirs '((right . down) (down . right)))
+      (unless done
+        (let* ((win (selected-window))
+               (nextdir (car dirs))
+               (neighbour-dir (cdr dirs))
+               (next-win (windmove-find-other-window nextdir win))
+               (neighbour1 (windmove-find-other-window neighbour-dir win))
+               (neighbour2 (if next-win (with-selected-window next-win
+                                          (windmove-find-other-window neighbour-dir next-win)))))
+          ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
+          (setq done (and (eq neighbour1 neighbour2)
+                          (not (eq (minibuffer-window) next-win))))
+          (if done
+              (let* ((other-buf (window-buffer next-win)))
+                (delete-window next-win)
+                (if (eq nextdir 'right)
+                    (split-window-vertically)
+                  (split-window-horizontally))
+                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
+
+(defun display-new-buffer (buffer force-other-window)
+  "If BUFFER is visible, select it.
+If it's not visible and there's only one window, split the
+current window and select BUFFER in the new window. If the
+current window (before the split) is more than 100 columns wide,
+split horizontally(left/right), else split vertically(up/down).
+If the current buffer contains more than one window, select
+BUFFER in the least recently used window.
+This function returns the window which holds BUFFER.
+FORCE-OTHER-WINDOW is ignored."
+  (or (get-buffer-window buffer)
+    (if (one-window-p)
+        (let ((new-win
+               (if (> (window-width) 100)
+                   (split-window-horizontally)
+                 (split-window-vertically))))
+          (set-window-buffer new-win buffer)
+          new-win)
+      (let ((new-win (get-lru-window)))
+        (set-window-buffer new-win buffer)
+        new-win))))
+;; use display-buffer-alist instead of display-buffer-function if the following line won't work
+;; (setq display-buffer-function 'display-new-buffer)
+
+;(setq split-height-threshold nil)
+;(setq split-width-threshold 0)
+
+;;— User Option: pop-up-frames
+;;If the value of this variable is non-nil, that means display-buffer may display buffers by making new frames. The default is nil.
+;;
+;;A non-nil value also means that when display-buffer is looking for a window already displaying buffer-or-name, it can search any visible or iconified frame, not just the selected frame.
+
+;  (customize-set-variable
+;           'display-buffer-base-action
+;           '((display-buffer-reuse-window display-buffer-same-window
+;              display-buffer-in-previous-window
+;              display-buffer-use-some-window)))
+
+; (customize-set-variable
+;           'display-buffer-base-action
+;           '((display-buffer-reuse-window display-buffer-pop-up-frame)
+;             (reusable-frames . 0)))

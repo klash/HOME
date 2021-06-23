@@ -3,7 +3,7 @@
 	pager = less
 [user]
 	name = Karl Klashinsky
-	email = klash@employees.org
+	email = klash@vmware.com
 [push]
 [filter "media"]
 	clean = git media clean %f
@@ -14,3 +14,5 @@
 # This is specific for Open Contrail's gerrit (https://review.opencontrail.org)
 [gitreview]
 	username = Klash
+[url "git@gitlab.eng.vmware.com:"]
+	insteadof = https://gitlab.eng.vmware.com/

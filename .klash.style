@@ -1,9 +1,11 @@
 classname orange ;
 // comment gray ;
 comment cyan i ;
-function blue;
+//function blue; methods too
+function green;
 keyword purple ;
-preproc darkblue ;
+//preproc darkblue ; import etc
+preproc green ;
 regexp orange ;
 string red ;
 todo yellow ;

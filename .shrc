@@ -18,9 +18,12 @@ umask 022
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/X11R6/bin
 
 # VMware specific PATH adds
-[[ -d /build/apps/bin ]]     && PATH=/build/apps/bin:$PATH
-[[ -d /mts/git/bin ]]        && PATH=/mts/git/bin:$PATH
-[[ -d $HOME/git-tools/bin ]] && PATH=$PATH:$HOME/git-tools/bin
+[[ -d /build/apps/bin ]]            && PATH=/build/apps/bin:$PATH
+[[ -d /build/apps/contrib/bin ]]    && PATH=/build/apps/contrib/bin:$PATH
+[[ -d /mts/git/bin ]]               && PATH=/mts/git/bin:$PATH
+
+[[ -d $HOME/.local/bin ]]           && PATH=$HOME/.local/bin:$PATH
+[[ -d $HOME/.local/git-tools/bin ]] && PATH=$PATH:$HOME/.local/git-tools/bin
 
 PATH=${PATH}:$HOME/bin
 export PATH
@@ -54,6 +57,10 @@ fi
 
 # set ENV to a file invoked each time sh is started for interactive use.
 ENV=$HOME/.shrc; export ENV
+
+# For python pip/pip3 usage
+export XDG_CACHE_HOME=/dbc/sc-dbc2117/klash/.cache
+export PYTHONUSERBASE=/dbc/sc-dbc2117/klash/.local
 
 # Uncomment next line to enable the builtin emacs(1) command line editor
 # in sh(1), e.g. C-a -> beginning-of-line.
