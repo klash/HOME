@@ -59,8 +59,8 @@ fi
 ENV=$HOME/.shrc; export ENV
 
 # For python pip/pip3 usage
-export XDG_CACHE_HOME=/dbc/sc-dbc2117/klash/.cache
-export PYTHONUSERBASE=/dbc/sc-dbc2117/klash/.local
+export XDG_CACHE_HOME=/dbc/sc-dbc2168/klash/.cache
+export PYTHONUSERBASE=/dbc/sc-dbc2168/klash/.local
 
 # Uncomment next line to enable the builtin emacs(1) command line editor
 # in sh(1), e.g. C-a -> beginning-of-line.

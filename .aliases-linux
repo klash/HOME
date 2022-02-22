@@ -6,6 +6,14 @@ alias gs="git status"
 # git log|show -M --summary <hash>
 # git log|show --name-status
 # git config alias.logp 'log --pretty=format:"%s %Cgreenby %an <%ae>"'
+# git log --graph --all --pretty=format:"%Cred%h%Creset - %Cgreen(%cr)%Creset %s%C(yellow)%d%Creset" --abbrev-commit --date=relative
+
+# git log --graph --all --format='%h %s%n        (%an, %ar)%d' --abbrev-commit
+#
+# OR
+# git config --global alias.graph \
+#    "log --graph --all --format='%h %s%n        (%an, %ar)%d' --abbrev-commit"
+# git graph --reflog
 
 alias cvs=/usr/bin/cvs
 

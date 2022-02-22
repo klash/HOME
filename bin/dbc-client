@@ -1,0 +1,225 @@
+#!/bin/bash
+
+VERBOSE="yes"
+DBCHOST=$(hostname -s)
+DBCFQDNHOST=$(hostname)
+DBCROOT=/dbc/$DBCHOST/$USER
+
+info(){
+    [[ -z $VERBOSE ]] && return
+    echo "info: $*"
+}
+warn(){
+    echo "WARN: $*"
+}
+error(){
+    echo "ERROR: $*"
+}
+usage(){
+    cat <<EOF
+usage: dbc-client <name> [ <branch ] [ <cln> ]
+       <name>   : used to create p4 client (full name will be $USER-<client>)
+       <branch> : p4 branch for client (default: "main")
+       <cln>    : CLN to sync client to (default: "latest")
+
+       Client will be created on $DBCROOT/<name>
+EOF
+}
+
+is_cln(){
+    [[ $1 =~ ^[1-9][0-9]{6}$ ]] && return 0 || return 1
+}
+
+set_cln(){
+    [[ -n $1 ]] && is_cln $1 && cln=$1 && return 0
+}
+
+if [[ -z $1 ]]; then
+    usage
+    exit 1
+elif is_cln $1; then
+    error first arg \($1\) appears to be a CLN
+    usage
+    exit 1
+fi
+
+client=$1
+full_client=$USER-$client
+shift
+
+# defaults
+branch=main
+cln=latest
+
+next=$1
+shift
+set_cln $next
+
+[[ $cln == "latest" && -n $next ]] && branch=$next
+
+set_cln $1
+
+if [[ ! -d $DBCROOT ]]; then
+    error No DBC dir for $USER at $DBCROOT
+    usage; exit 1
+fi
+
+if [[ -d $DBCROOT/$client ]]; then
+    error Client dir $DBCROOT/$client already exists, aborting
+    exit 1
+fi
+
+client_dir=$DBCROOT/$client
+info Creating client $full_client at $client_dir ...
+info Using branch=$branch
+info Will sync client to cln=$cln
+
+info Use ^C within 5 seconds to abort...
+sleep 5
+
+mkdir -p $client_dir && info Created client dir $client_dir
+cat <<EOF > $client_dir/.p4config
+P4USER=$USER
+P4PORT=perforce.eng.vmware.com:1666
+# P4PORT=perforce-releng.eng.vmware.com:1850
+P4CLIENT=$full_client
+EOF
+info Created $client_dir/.p4config
+
+spec=$(mktemp)
+
+cat <<EOF2 > $spec
+Client: $full_client
+Owner:  $USER
+Host:   $DBCFQDNHOST
+Description: Created by $USER
+Root:   $client_dir
+Options:        noallwrite noclobber nocompress unlocked nomodtime normdir
+SubmitOptions:  submitunchanged
+LineEnd:        local
+View:
+	//depot/build/$branch/bin/... //$full_client/bin/...
+	//depot/build/$branch/bmps/... //$full_client/bmps/...
+	//depot/build/$branch/cbot/... //$full_client/cbot/...
+	//depot/build/$branch/contrib/... //$full_client/contrib/...
+	//depot/build/$branch/gobuild/... //$full_client/gobuild/...
+	//depot/build/$branch/lib/... //$full_client/lib/...
+	//depot/build/$branch/scheduler/... //$full_client/scheduler/...
+	//depot/build/$branch/webapps/... //$full_client/webapps/...
+EOF2
+
+cat <<EOF > $spec
+Client: $full_client
+Owner:  $USER
+Host:   $DBCFQDNHOST
+Description: Created by $USER
+Root:   $client_dir
+Options:        noallwrite noclobber nocompress unlocked nomodtime normdir
+SubmitOptions:  submitunchanged
+LineEnd:        local
+View:
+	//depot/bora/$branch/... //$full_client/bora/...
+	//depot/scons/$branch/... //$full_client/scons/...
+	//depot/vmkdrivers/$branch/... //$full_client/vmkdrivers/...
+#	//depot/crosscompile/$branch/... //$full_client/crosscompile/...
+	//depot/bora-vmsoft/$branch/... //$full_client/bora-vmsoft/...
+	//depot/horizonclient/$branch/... //$full_client/horizonclient/...
+EOF
+
+cat <<EOF4 > $spec
+Client: $full_client
+Owner:  $USER
+Host:   $DBCFQDNHOST
+Description: Created by $USER
+Root:   $client_dir
+Options:        noallwrite noclobber nocompress unlocked nomodtime normdir
+SubmitOptions:  submitunchanged
+LineEnd:        local
+View:
+	//depot/bazel/$branch/... //$full_client/bazel/...
+	//depot/bora/$branch/... //$full_client/bora/...
+	//depot/bora-vmsoft/$branch/... //$full_client/bora-vmsoft/...
+	//depot/scons/$branch/... //$full_client/scons/...
+EOF4
+
+cat <<EOF4 > $spec
+Client: $full_client
+Owner:  $USER
+Host:   $DBCFQDNHOST
+Description: Created by $USER
+Root:   $client_dir
+Options:        noallwrite noclobber nocompress unlocked nomodtime normdir
+SubmitOptions:  submitunchanged
+LineEnd:        local
+View:
+	//depot/esxvmovf/$branch/... //$full_client/esxvmovf/...
+EOF4
+
+cat <<EOF3 > $spec
+Client: $full_client
+Owner:  $USER
+Host:   $DBCFQDNHOST
+Description: Created by $USER
+Root:   $client_dir
+Options:        noallwrite noclobber nocompress unlocked nomodtime normdir
+SubmitOptions:  submitunchanged
+LineEnd:        local
+View:
+	//depot/applmgmt/$branch/... //$full_client/applmgmt/...
+	//depot/bazel/$branch/... //$full_client/bazel/...
+	//depot/bbq/$branch/... //$full_client/bbq/...
+	//depot/bora/$branch/... //$full_client/bora/...
+	//depot/bora-vmsoft/$branch/... //$full_client/bora-vmsoft/...
+	//depot/cls/$branch/... //$full_client/cls/...
+	//depot/cpd/$branch/... //$full_client/cpd/...
+	//depot/dataservices/$branch/... //$full_client/dataservice/...
+	//depot/gmsl/$branch/... //$full_client/gmsl/...
+	//depot/horizonclient/$branch/... //$full_client/horizonclient/...
+	//depot/lotus/$branch/... //$full_client/lotus/...
+	//depot/manifest/$branch/... //$full_client/manifest/...
+	//depot/scons/$branch/... //$full_client/scons/...
+	//depot/vcqe/$branch/... //$full_client/vcqe/...
+	//depot/vim-clients/$branch/... //$full_client/vim-clients/...
+	//depot/vmkdrivers/$branch/... //$full_client/vmkdrivers/...
+	//depot/vsan-mgmt-ui/$branch/... //$full_client/vsan-mgmt-ui/...
+	//depot/vsphere-client-modules/$branch/... //$full_client/vsphere-client-modules/...
+	//depot/vum/$branch/... //$full_client/vum/...
+EOF3
+
+cat <<EOF4 > $spec
+Client: $full_client
+Owner:  $USER
+Host:   $DBCFQDNHOST
+Description: Created by $USER
+Root:   $client_dir
+Options:        noallwrite noclobber nocompress unlocked nomodtime normdir
+SubmitOptions:  submitunchanged
+LineEnd:        local
+View:
+	//depot/bora/$branch/... //$full_client/bora/...
+	//depot/bazel/$branch/... //$full_client/bazel/...
+	//depot/vmkdrivers/$branch/... //$full_client/vmkdrivers/...
+	//depot/scons/$branch/... //$full_client/scons/...
+EOF4
+
+info Creating perforce client $full_client...
+(cd $client_dir && p4 client -i < $spec)
+rm -f $spec
+
+msg="Syncing $full_client"
+git_msg="Initial commit"
+cln_arg=
+
+if [[ $cln == latest ]]; then
+    msg="$msg ..."
+else
+    msg="$msg to CLN=$cln ..."
+    git_msg="main@$cln"
+    cln_arg="@$cln"
+    echo $cln > $client_dir/CLN.sync
+fi
+info $msg
+(cd $client_dir && p4 sync -q $cln_arg)
+#info "Setting up local git repo"
+#(cd $client_dir && git init && git add -f --all bora scons vmkdrivers && git commit -q -m "$git_msg")
+# Need to generate a bora/Local.sc
